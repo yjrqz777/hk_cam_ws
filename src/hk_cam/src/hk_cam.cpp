@@ -37,7 +37,36 @@ void PsDataCallBack(LONG lRealHandle, DWORD dwDataType, BYTE *pPacketBuffer, DWO
         PlayM4_InputData(nport, pPacketBuffer, nPacketSize);
 }
 
-int GetStream()
+
+class HK_Node : public rclcpp::Node
+{
+public:
+    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_img;
+    HK_Node() : Node("hk_node")
+    {
+        RCLCPP_INFO(this->get_logger(), "lidar_node init ...");
+        pub_img = this->create_publisher<sensor_msgs::msg::Image>("hk_img",
+                                                                  10);
+        HK_Node::hk_show2();
+    }
+    ~HK_Node() override
+    {
+        std::cout << "-----" << std::endl;
+    }
+
+private:
+    int hk_show();
+
+public:
+    int hk_show2();
+    int GetStream()；
+};
+
+
+
+
+
+int HK_Node::GetStream()
 {
     // 从配置文件读取设备信息
     //    IniFile ini("Device.ini");
@@ -95,29 +124,6 @@ int GetStream()
     return iUserID;
 }
 
-class HK_Node : public rclcpp::Node
-{
-public:
-    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_img;
-    HK_Node() : Node("hk_node")
-    {
-        RCLCPP_INFO(this->get_logger(), "lidar_node init ...");
-        pub_img = this->create_publisher<sensor_msgs::msg::Image>("hk_img",
-                                                                  10);
-        HK_Node::hk_show2();
-    }
-    ~HK_Node() override
-    {
-        std::cout << "-----" << std::endl;
-    }
-
-private:
-    int hk_show();
-
-public:
-    int hk_show2();
-    
-};
 
 int HK_Node::hk_show2()
 {
@@ -263,9 +269,11 @@ int main(int argc, char *argv[])
     std::cout << "PlayM4_GetPort(&nport); = " << PlayM4_GetPort(&nport) << std::endl;
 
     //    NET_DVR_SetLogToFile(3, "./record/");
-    int iUserID = GetStream();
-    std::cout << "iUserID=" << iUserID << "\r"
-              << NET_DVR_GetLastError() << std::endl;
+    auto node = std::make_shared<HK_Node>();
+    int iUserID = node->GetStream();
+    // int iUserID = GetStream();
+    // std::cout << "iUserID=" << iUserID << "\r"
+    //           << NET_DVR_GetLastError() << std::endl;
     if (iUserID>=0)
     {
 
