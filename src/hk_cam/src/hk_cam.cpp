@@ -116,6 +116,7 @@ private:
 
 public:
     int hk_show2();
+    
 };
 
 int HK_Node::hk_show2()
