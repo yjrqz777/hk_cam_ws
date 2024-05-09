@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2b058b01-655e-4cbc-9e0c-d9eb20a323e4" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/hk_cam_ws.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hk_cam_ws.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd.sh" beforeDir="false" afterPath="$PROJECT_DIR$/cmd.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/record/SdkLog_1_W.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/hk_cam/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/query/cache-v2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/query/cmakeFiles-v1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/query/codemodel-v2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/query/toolchains-v1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/cache-v2-393223f712f332496d6f.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/cmakeFiles-v1-50196f3fccc239039ff1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/codemodel-v2-7cb07c54ce7298f5206d.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/directory-.-Release-8cd9f685379978b9b75d.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/index-2024-04-30T14-27-12-0730.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/target-hk_cam-Release-961ba56d0016dc4edcd6.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/target-hk_cam_uninstall-Release-ba725a3119fd07977903.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/target-uninstall-Release-e5670d408d1959bffc61.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/.cmake/api/v1/reply/toolchains-v1-d37530156d1fc1d1b91b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeCache.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CMakeCCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CMakeCXXCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CMakeSystem.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CompilerIdC/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/3.27.8/CompilerIdCXX/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/clion-Release-ros2-log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/clion-environment.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/cmake.check_cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CMakeFiles/rules.ninja" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CTestConfiguration.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CTestCustom.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/CTestTestfile.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/hk_camConfig-version.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/hk_camConfig.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/package.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/stamps/ament_prefix_path.sh.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/stamps/nameConfig-version.cmake.in.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/stamps/nameConfig.cmake.in.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/stamps/package.xml.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/stamps/package_xml_2_cmake.py.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/stamps/path.sh.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_core/stamps/templates_2_cmake.py.stamp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_environment_hooks/ament_prefix_path.dsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_environment_hooks/local_setup.bash" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_environment_hooks/local_setup.dsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_environment_hooks/local_setup.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_environment_hooks/local_setup.zsh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_environment_hooks/package.dsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_environment_hooks/path.dsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/hk_cam" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_index/share/ament_index/resource_index/packages/hk_cam" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/hk_cam" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_package_templates/templates.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/build.ninja" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/cmake-build-release-ros2/cmake_install.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/package.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/hk_cam/package.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam/src/hk_cam.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/hk_cam/src/hk_cam.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam_slave/hk_cam_slave/hk_cam_slave.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/hk_cam_slave/hk_cam_slave/hk_cam_slave.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_cam_slave/package.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/hk_cam_slave/package.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_interfaces/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/hk_interfaces/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hk_interfaces/msg/Hkcam.msg" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2gDCxvZ6sh34zd1AJlmw56GVvhw" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/yjrqz/download/test_opencv/hk_cam_ws/build/compile_commands.json",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="2b058b01-655e-4cbc-9e0c-d9eb20a323e4" name="更改" comment="" />
+      <created>1715223011718</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1715223011718</updated>
+      <workItem from="1715223012867" duration="316000" />
+      <workItem from="1715223391611" duration="37000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

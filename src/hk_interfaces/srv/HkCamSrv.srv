@@ -1,0 +1,7 @@
+# request
+uint8 mode
+uint8 on_off
+---
+# response
+bool success
+uint8 errcode
