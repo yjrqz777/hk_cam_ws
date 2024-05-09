@@ -8,9 +8,11 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(hk_interfaces REQUIRED)
 
 
 set(JETSON OFF)
@@ -40,7 +42,9 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(
         hk_lib/include/
 )
-
+# include_directories(
+#   hk_interfaces/include/
+# )
 # 添加可运行程序
 add_executable(hk_cam src/hk_cam.cpp)
 
@@ -73,6 +77,7 @@ ament_target_dependencies(
   "rclcpp"
   "std_msgs"
   "sensor_msgs"
+  "hk_interfaces"
 )
 
 install(TARGETS hk_cam

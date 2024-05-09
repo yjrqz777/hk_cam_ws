@@ -1,4 +1,4 @@
-ros2 pkg create --build-type ament_cmake --node-name hk_cam2 hk_cam2 --dependencies rclcpp
+ros2 pkg create --build-type ament_cmake --node-name hk_cam hk_cam --dependencies rclcpp
 
 ros2 pkg create --build-type ament_python hk_cam_slave --node-name hk_cam_slave --dependencies rclpy
 
@@ -8,6 +8,26 @@ ros2 pkg create hk_interfaces --build-type ament_cmake
 
 colcon build --symlink-install
 
+
+
+
+
+
+ros2 pkg create example_ros2_interfaces --build-type ament_cmake --dependencies rosidl_default_generators geometry_msgs
+
+
+colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+
+
+
+
+
+
+
+
+
+colcon build --packages-select hk_cam
 ros2 run hk_cam hk_cam
 
 

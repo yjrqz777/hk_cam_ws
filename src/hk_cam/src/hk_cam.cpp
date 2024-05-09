@@ -8,7 +8,12 @@
 #include "std_msgs/msg/header.hpp"
 
 #include <sensor_msgs/msg/image.hpp>
+// #include "hk_interfaces/"
 #include <opencv2/opencv.hpp>
+
+
+#include "hk_interfaces/srv/hk_cam_srv.hpp"
+
 
 #include "HCNetSDK.h"
 #include "LinuxPlayM4.h"
@@ -18,6 +23,52 @@ bool need_exit = true;
 
 typedef unsigned char *PBYTE;
 LONG nport = 1;
+
+
+
+
+class HK_Node : public rclcpp::Node
+{
+public:
+
+
+void handle_move_robot(const std::shared_ptr<hk_interfaces::srv::HkCamSrv::Request> request,
+                         std::shared_ptr<hk_interfaces::srv::HkCamSrv::Response> response)
+{
+
+}
+
+    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_img;
+//    rclcpp::Service<>::SharedPtr ptz_ser;
+    HK_Node() : Node("hk_node")
+    {
+        RCLCPP_INFO(this->get_logger(), "lidar_node init ...");
+        pub_img = this->create_publisher<sensor_msgs::msg::Image>("hk_img",
+                                                                  10);
+        this->create_service<hk_interfaces::srv::HkCamSrv>("test",
+            std::bind(&HK_Node::handle_move_robot,
+                                this,
+                                std::placeholders::_1,
+                                std::placeholders::_2));
+
+
+
+        // HK_Node::hk_show2();
+    }
+    ~HK_Node() override
+    {
+        std::cout << "-----" << std::endl;
+    }
+
+private:
+    int hk_show();
+    
+
+public:
+    int hk_show2();
+    int GetStream();
+    // void PsDataCallBack(LONG lRealHandle, DWORD dwDataType, BYTE *pPacketBuffer, DWORD nPacketSize, void *pUser);
+};
 
 void PsDataCallBack(LONG lRealHandle, DWORD dwDataType, BYTE *pPacketBuffer, DWORD nPacketSize, void *pUser)
 {
@@ -36,33 +87,6 @@ void PsDataCallBack(LONG lRealHandle, DWORD dwDataType, BYTE *pPacketBuffer, DWO
     else if (dwDataType == NET_DVR_STREAMDATA)
         PlayM4_InputData(nport, pPacketBuffer, nPacketSize);
 }
-
-
-class HK_Node : public rclcpp::Node
-{
-public:
-    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_img;
-    HK_Node() : Node("hk_node")
-    {
-        RCLCPP_INFO(this->get_logger(), "lidar_node init ...");
-        pub_img = this->create_publisher<sensor_msgs::msg::Image>("hk_img",
-                                                                  10);
-        HK_Node::hk_show2();
-    }
-    ~HK_Node() override
-    {
-        std::cout << "-----" << std::endl;
-    }
-
-private:
-    int hk_show();
-
-public:
-    int hk_show2();
-    int GetStream()；
-};
-
-
 
 
 
@@ -272,15 +296,14 @@ int main(int argc, char *argv[])
     auto node = std::make_shared<HK_Node>();
     int iUserID = node->GetStream();
     // int iUserID = GetStream();
-    // std::cout << "iUserID=" << iUserID << "\r"
-    //           << NET_DVR_GetLastError() << std::endl;
+    std::cout << "iUserID=" << iUserID << "\r"
+              << NET_DVR_GetLastError() << std::endl;
     if (iUserID>=0)
     {
 
         rclcpp::init(argc, argv);
         signal(SIGINT, ExitHandler);
-        auto node = std::make_shared<HK_Node>();
-
+        // auto node = std::make_shared<HK_Node>();
         rclcpp::spin(node);
     }
     return 0;

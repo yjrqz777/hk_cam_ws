@@ -16,6 +16,18 @@ find_package(rosidl_default_generators REQUIRED)
 
 
 # ament_export_dependencies(rosidl_default_runtime)
+set(msg_files
+  "msg/HkCamMsg.msg"
+  "srv/HkCamSrv.srv"
+)
+
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  # "msg/Hk_cam_msg.msg"
+  # "srv/Hk_cam_srv.srv"
+  ${msg_files}
+  # DEPENDENCIES sensor_msgs
+)
 
 
 
@@ -32,15 +44,6 @@ endif()
 
 
 
-set(msg_files
-  "msg/Hkcam.msg"
-)
-
-
-rosidl_generate_interfaces(${PROJECT_NAME}
-  ${msg_files}
-  # DEPENDENCIES sensor_msgs
-)
 
 
 

@@ -5,6 +5,11 @@ from rclpy.node import Node
 #include "std_msgs/msg/header.hpp"
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge  
+
+from hk_interfaces.srv import hkcamsrv
+
+# import hk_interfaces.srv
+
 import cv2 
 # import torch
 import numpy as np
