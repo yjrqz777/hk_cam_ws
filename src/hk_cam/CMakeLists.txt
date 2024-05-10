@@ -15,8 +15,8 @@ find_package(OpenCV REQUIRED)
 find_package(hk_interfaces REQUIRED)
 
 
+# 判断系统架构
 set(JETSON OFF)
-
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     message( "Configuring on/for Linux")
     if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
@@ -36,7 +36,7 @@ else()
     message( "Configuring on/for ${CMAKE_SYSTEM_NAME}")
 endif()
 
-
+# 找到 opencv 头文件
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 include_directories(
@@ -46,7 +46,10 @@ include_directories(
 #   hk_interfaces/include/
 # )
 # 添加可运行程序
-add_executable(hk_cam src/hk_cam.cpp)
+add_executable(hk_cam
+        src/hk_cam.cpp
+        src/hk_class.cpp
+)
 
 # 定义包位置
 if(JETSON)
