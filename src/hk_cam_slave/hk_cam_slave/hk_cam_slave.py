@@ -1,5 +1,6 @@
 #!/home/yjrqz/miniconda3/envs/yolov5/bin/python
 import rclpy
+
 import argparse
 from rclpy.node import Node
 #include "std_msgs/msg/header.hpp"
@@ -10,7 +11,10 @@ from cv_bridge import CvBridge
 from hk_interfaces.srv import HkCamSrv
 # import hk_interfaces.srv
 
-import cv2 
+import cv2
+import sys
+# conda 环境所在路径
+sys.path.append(f'/home/yjrqz/miniconda3/envs/yolov5/lib/python3.8/site-packages/')
 import torch
 import numpy as np
         # 'header': 'std_msgs/Header',
@@ -31,6 +35,11 @@ class hk_cam_slave(Node):
                                                         "hk_img",
                                                         self.hk_node_callback,
                                                         10)
+        self.vad_model= torch.hub.load('/media/yjrqz/anything/ubuntu20.04/linux/yolov5/','custom',path='/media/yjrqz/anything/ubuntu20.04/linux/yolov5/best2.pt', source='local')
+        self.vad_model.conf = 0.6
+        self.vad_model.iou = 0.4
+
+    
     def hk_node_callback(self,hk_image):
         # self.get_logger().info("hk_node")
         self.get_logger().info("hk_image.height = {}\n\
@@ -66,7 +75,9 @@ class hk_cam_slave(Node):
             return  
   
         # 使用OpenCV显示图像  
-        cv2.imshow('Image window', cv_image)  
+        results = self.vad_model(cv_image,augment=False)
+        img_np_bgr = results.render()[0]
+        cv2.imshow('Image window', img_np_bgr)  
         cv2.waitKey(1)  # 等待1毫秒，然后关闭窗口（如果需要持续显示，可以移除或调整此行代码）  
   
 
