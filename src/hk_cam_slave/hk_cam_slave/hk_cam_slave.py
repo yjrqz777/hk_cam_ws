@@ -6,12 +6,12 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge  
 
-from hk_interfaces.srv import hkcamsrv
-
+# from hk_interfaces.srv import hkcamsrv
+from hk_interfaces.srv import HkCamSrv
 # import hk_interfaces.srv
 
 import cv2 
-# import torch
+import torch
 import numpy as np
         # 'header': 'std_msgs/Header',
         # 'height': 'uint32',

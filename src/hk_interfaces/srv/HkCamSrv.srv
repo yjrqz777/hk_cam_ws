@@ -1,6 +1,8 @@
 # request
 uint8 mode
 uint8 on_off
+uint8 thread_flag
+uint8 pic_num
 ---
 # response
 bool success

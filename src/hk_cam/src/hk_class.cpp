@@ -22,6 +22,7 @@ HK_Node::HK_Node(std::string name) : Node(name)
     RCLCPP_INFO(this->get_logger(), "ptz_control_service init ...");
 //    timer_ = this->create_wall_timer(std::chrono::milliseconds(1),std::bind(&HK_Node::timer_callback, this));
     publish_thread_ = std::thread(&HK_Node::publish_loop, this);
+    thread_flag_ = 0;
 }
 //    HK_Node::hk_show2();
 
@@ -29,10 +30,13 @@ HK_Node::HK_Node(std::string name) : Node(name)
 void HK_Node::publish_loop() {
     // 持续发布消息，不使用定时器
     while (rclcpp::ok()) {
-        HK_Node::hk_show2();
-
-        // 简单的休眠以减少发布频率（可选）
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        if(thread_flag_==1)
+        {
+            HK_Node::hk_show2();
+            // 简单的休眠以减少发布频率（可选）
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        if(thread_flag_==0)std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -81,7 +85,7 @@ int HK_Node::GetStream()
     //    char *sPassword = "air12345678";
     NET_DVR_DEVICEINFO_V30 struDeviceInfo;
     // int iUserID = NET_DVR_Login_V30(sIP, iPort, sUserName, sPassword, &struDeviceInfo);
-    int iUserID = NET_DVR_Login_V30("192.168.44.64", 8000, "admin", "air12345678", &struDeviceInfo);
+    int iUserID = NET_DVR_Login_V30("192.168.44.64", 8011, "admin", "air12345678", &struDeviceInfo);
     if (iUserID >= 0)
     {
         NET_DVR_PREVIEWINFO struPreviewInfo = {0};
@@ -145,19 +149,18 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
         response->errcode = 99;
         response->errtext = "err mode";
     }
-
+    this->thread_flag_ = request->thread_flag;
 
 }
 
 int HK_Node::hk_show2()
 {
 //    sleep(1);
-    DWORD dwPicSize = 1024 * 1024 * 3;
-    PBYTE pJpeg2 = NULL;
-    DWORD size = 0;
+    static DWORD dwPicSize = 1024 * 1024 * 3;
+    static PBYTE pJpeg2 = NULL;
+    static DWORD size = 0;
     BOOL ret = 0;
 //    std::cout << "nport = " << nport << std::endl;
-    //    for (int i = 0; i < 5000; i++)
     if (need_exit)
     {
         /* code */
@@ -166,14 +169,11 @@ int HK_Node::hk_show2()
         ret = PlayM4_GetJPEG(nport, pJpeg2, dwPicSize, &size);
 
         cv::Mat frame(1, size, CV_8UC1, pJpeg2);
-        std::cout << ret << std::endl;
+//        std::cout << ret << std::endl;
         cv::Mat image = cv::imdecode(frame, cv::IMREAD_COLOR);
-
         //        cv::Mat grayImg;
-
         // 将彩色图像转换为灰度图像
         //        cv::cvtColor(image, grayImg, cv::COLOR_BGR2GRAY);
-
 //        cv::Size size = image.size();
 //        std::cout << "Width: " << size.width << ", Height: " << size.height << std::endl;
 
@@ -182,17 +182,22 @@ int HK_Node::hk_show2()
         //        int crop_y = size.height / 4;
         //        int crop_width = size.width / 2;
         //        int crop_height = size.height / 2;
-        //        cv::Rect roi(0, 0, crop_width, crop_height);
-
+//        cv::Rect roi1(0, 0, size.width/2, size.height/2);
+//        cv::Rect roi2(size.width/2, 0, size.width/2, size.height/2);
+//        cv::Rect roi3(0, size.height/2, size.width/2, size.height/2);
+//        cv::Rect roi4(size.width/2, size.height/2, size.width/2, size.height/2);
         // 剪裁图片
-        cv::Mat cropped_img = image;
+        cv::Mat cropped_img1 = image;
+//        cv::Mat cropped_img2 = image(roi2);
+//        cv::Mat cropped_img3 = image(roi3);
+//        cv::Mat cropped_img4 = image(roi4);
         // cv::Mat color_image(1080, 1920, CV_8UC3);
-        auto msg = sensor_msgs::msg::Image();
         cv::Mat frame2;
+        frame2 = cropped_img1;
+
+        auto msg = sensor_msgs::msg::Image();
         msg.header.stamp = this->now();
         msg.header.frame_id = "2";
-
-        frame2 = cropped_img;
 
         msg.width = frame2.cols;
         msg.height = frame2.rows;
@@ -207,17 +212,16 @@ int HK_Node::hk_show2()
         msg.data = data_msg;
 //        std::cout << msg.width << std::endl;
         pub_img->publish(msg);
-
-//        char name[] = "name-%d-";
         // 检查图像是否正确解码
         if (!image.empty())
         {
-
-            //            printf("----%d----\n",i);
-            //            sprintf(name,"name-%d-",i);
-            cv::imshow("Decoded JPEG Image", cropped_img);
+//            cv::imshow("Decoded JPEG Image1", cropped_img1);
+//            cv::imshow("Decoded JPEG Image2", cropped_img2);
+//            cv::imshow("Decoded JPEG Image3", cropped_img3);
+//            cv::imshow("Decoded JPEG Image4", cropped_img4);
             // 等待按键事件，0表示无限等待
-            cv::waitKey(1);
+//            cv::waitKey(1);
+
         }
         else
         {
