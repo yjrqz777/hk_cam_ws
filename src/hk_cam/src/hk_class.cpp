@@ -88,6 +88,7 @@ int HK_Node::GetStream()
     int iUserID = NET_DVR_Login_V30("192.168.44.64", 8011, "admin", "air12345678", &struDeviceInfo);
     if (iUserID >= 0)
     {
+        this->lUserID = iUserID;
         NET_DVR_PREVIEWINFO struPreviewInfo = {0};
         struPreviewInfo.lChannel = 1;
         struPreviewInfo.dwStreamType = 1;
@@ -149,6 +150,13 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
         response->errcode = 99;
         response->errtext = "err mode";
     }
+    // /SDCARD/picture/1.jpg
+    LPNET_DVR_JPEGPARA pic_arg;
+    pic_arg->wPicSize = 9;
+    pic_arg->wPicQuality = 0;
+    printf("lUserID=%d\n",this->lUserID);
+    // std::cout << "lUserID" <<this->lUserID <<std::endl;
+    NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,"/SDCARD/workspace/cyberdog2_ros2_galactic/hk_cam_ws/src/hk_cam/src/1.jpg");
     this->thread_flag_ = request->thread_flag;
 
 }
@@ -215,12 +223,12 @@ int HK_Node::hk_show2()
         // 检查图像是否正确解码
         if (!image.empty())
         {
-//            cv::imshow("Decoded JPEG Image1", cropped_img1);
+        //    cv::imshow("Decoded JPEG Image1", cropped_img1);
 //            cv::imshow("Decoded JPEG Image2", cropped_img2);
 //            cv::imshow("Decoded JPEG Image3", cropped_img3);
 //            cv::imshow("Decoded JPEG Image4", cropped_img4);
             // 等待按键事件，0表示无限等待
-//            cv::waitKey(1);
+        //    cv::waitKey(1);
 
         }
         else

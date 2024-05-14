@@ -41,6 +41,7 @@ private:
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_img;
     rclcpp::Service<hk_interfaces::srv::HkCamSrv>::SharedPtr  ptz_control_service;
     int PlayHandleV40 = 0;
+    int lUserID = 0;
     void timer_callback();
     void publish_loop();
     void ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::SharedPtr request,

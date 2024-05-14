@@ -3,6 +3,8 @@ uint8 mode
 uint8 on_off
 uint8 thread_flag
 uint8 pic_num
+uint8 get_pic
+string get_pic_name
 ---
 # response
 bool success
