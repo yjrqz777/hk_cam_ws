@@ -132,6 +132,16 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
     RCLCPP_INFO(this->get_logger(), "request->mode = %d,request->on_off = %d\n",request->mode,request->on_off);
     bool res = false;
 //    ptz_cmdx = request->mode;
+    if(request->get_pic)
+    {
+    LPNET_DVR_JPEGPARA pic_arg;
+    pic_arg->wPicSize = 9;
+    pic_arg->wPicQuality = 0;
+    printf("request->get_pic_name = %s\n",request->get_pic_name);
+    NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,"/SDCARD/workspace/cyberdog2_ros2_galactic/hk_cam_ws/src/hk_cam/src/1.jpg");
+ 
+    }
+
     if( (request->mode>=11 && request->mode<=14) ||  (request->mode>=21 && request->mode<=24) )
     {
         res = NET_DVR_PTZControl(this->PlayHandleV40,request->mode,0);
@@ -151,13 +161,7 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
         response->errtext = "err mode";
     }
     // /SDCARD/picture/1.jpg
-    LPNET_DVR_JPEGPARA pic_arg;
-    pic_arg->wPicSize = 9;
-    pic_arg->wPicQuality = 0;
-    printf("lUserID=%d\n",this->lUserID);
-    // std::cout << "lUserID" <<this->lUserID <<std::endl;
-    NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,"/SDCARD/workspace/cyberdog2_ros2_galactic/hk_cam_ws/src/hk_cam/src/1.jpg");
-    this->thread_flag_ = request->thread_flag;
+   this->thread_flag_ = request->thread_flag;
 
 }
 
