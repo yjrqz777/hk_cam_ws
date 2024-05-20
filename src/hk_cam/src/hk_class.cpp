@@ -137,12 +137,24 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
     LPNET_DVR_JPEGPARA pic_arg;
     pic_arg->wPicSize = 9;
     pic_arg->wPicQuality = 0;
-    printf("request->get_pic_name = %s\n",request->get_pic_name);
-    NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,"/SDCARD/workspace/cyberdog2_ros2_galactic/hk_cam_ws/src/hk_cam/src/1.jpg");
- 
+    RCLCPP_INFO(this->get_logger(), "get_pic_name = %s\n",request->get_pic_name.c_str());
+    std::string pic_name = request->get_pic_name;
+    char sPicFileName[pic_name.size() + 1];
+    std::strcpy(sPicFileName, pic_name.c_str());
+    if(NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,sPicFileName))
+    {
+        response->success = true;
+        response->errcode = 0;
     }
+    else
+    {
+        response->success = false;
+        response->errcode = NET_DVR_GetLastError(); 
+    }
+    std::memset(sPicFileName, 0, sizeof(sPicFileName));
 
-    if( (request->mode>=11 && request->mode<=14) ||  (request->mode>=21 && request->mode<=24) )
+    }
+    else if( (request->mode>=11 && request->mode<=14) ||  (request->mode>=21 && request->mode<=24) )
     {
         res = NET_DVR_PTZControl(this->PlayHandleV40,request->mode,0);
         if (res)
@@ -153,6 +165,30 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
             response->errcode = 0;
             response->errtext = "NULL";
         }
+        else
+        {
+            response->errcode = NET_DVR_GetLastError(); 
+        }
+    }
+    else if(request->mode==39)
+    {
+        // RCLCPP_INFO(this->get_logger(), "request->point_id = %d\n",request->point_id);
+        int lRet = NET_DVR_PTZPreset_Other(this->lUserID,1,39,request->point_id);
+        if(lRet == 0)
+        {
+            // RCLCPP_INFO(this->get_logger(), "失败\n");
+            // printf("失败");
+            NET_DVR_PTZPreset_Other(this->lUserID, 1, 39 , 300);
+            response->errcode = NET_DVR_GetLastError(); 
+            response->success = false;
+        }
+        else
+        {
+
+            response->success = true;
+            response->errtext = "NULL";
+        }
+
     }
     else
     {
@@ -160,6 +196,12 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
         response->errcode = 99;
         response->errtext = "err mode";
     }
+    
+        // lRet = self.Objdll.NET_DVR_PTZPreset_Other(self.lUserId, 1, 39 , id)
+        // if lRet == 0:
+        //     self.Objdll.NET_DVR_PTZPreset_Other(self.lUserId, 1, 39 , 300)
+        // else:
+        //     print('开始转到指定位置')
     // /SDCARD/picture/1.jpg
    this->thread_flag_ = request->thread_flag;
 

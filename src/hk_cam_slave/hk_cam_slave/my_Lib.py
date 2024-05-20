@@ -33,6 +33,18 @@ class AudioT(Node):
         msg_send._speech.play_id = 32
         msg_send.text = string
         self.pub_audio_send.publish(msg_send)
+
+    # def PTZPreset_Other(self,string):
+    #     # self.get_logger().warn('service waiting')
+    #     while not self.get_audio_stat.wait_for_service(1):
+    #         self.get_logger().warn('service not available, waiting again...')
+    #     msg_send = AudioPlayExtend()
+    #     msg_send.is_online = True
+    #     msg_send.module_name = "AudioT"
+    #     msg_send._speech.module_name = "AudioT"
+    #     msg_send._speech.play_id = 32
+    #     msg_send.text = string
+    #     self.pub_audio_send.publish(msg_send)
         
         # self.get_logger().info("topic_talk-------")
 
@@ -52,7 +64,8 @@ class Client:
 
     def sendMsg(self, name_code, params):
         if name_code == 9999:
-            self.dog_speak.destroy_node()
+            print(name_code)
+            # self.dog_speak.destroy_node()
         else:
             try:
                 requset = cyberdog_app_pb2.SendRequest(nameCode=name_code,params=params)

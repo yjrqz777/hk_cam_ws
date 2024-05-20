@@ -12,7 +12,7 @@ from std_msgs.msg import String
 # from hk_interfaces.srv import hkcamsrv
 from hk_interfaces.srv import HkCamSrv
 from cv_bridge import CvBridge  
-
+import shutil
 # # request
 # uint8 mode
 # uint8 on_off
@@ -77,7 +77,8 @@ class hk_cam_slave(Node):
         super().__init__(name)
         self.get_logger().info("Hello ROS 2")  
         self.dog_speak = my_Lib.AudioT("dog_speak_salve") 
-        self.dog_speak.topic_talk("哔哔")
+        self.pic_path = "/SDCARD/workspace/cyberdog2_ros2_galactic/picture"
+        # self.dog_speak.topic_talk("哔哔")
 
         self.grpc_client = my_Lib.Client("127.0.0.1",
                                           "/SDCARD/workspace/cyberdog2_ros2_galactic/grpc_demo/cert/ca-cert.pem",
@@ -98,36 +99,62 @@ class hk_cam_slave(Node):
         self.stop_event = threading.Event()  
         self.my_thread = threading.Thread(target=self.thread_task)  
         self.my_thread.start()
-
+        # print(formatted_time)
         # self.vad_model= torch.hub.load('/media/yjrqz/anything/ubuntu20.04/linux/yolov5/','custom',path='/media/yjrqz/anything/ubuntu20.04/linux/yolov5/best2.pt', source='local')
         # self.vad_model.conf = 0.6
         # self.vad_model.iou = 0.4
     def thread_task(self):  
         while not self.stop_event.is_set():  
-
             while not self.ptz_control_client.wait_for_service(timeout_sec=1.0):
                 self.get_logger().info('service not available, waiting again...')
-            self.req = HkCamSrv.Request()
 
-            self.req.mode = 1
-            self.req.on_off = 0
-            self.req.thread_flag = 0
-            self.req.pic_num = 0
-            reqs =  self.ptz_control_client.call_async(self.req)
-            # print(reqs.done())
-            while not reqs.done():  
-                time.sleep(0.1) 
-                # print("This ")
-            response = reqs.result()
-            self.get_logger().info("response.success = {},{}\n".format(response.success,response.errtext))
-            # printff()
-                # if reqs.done():
-                #     break
+            # self.req = HkCamSrv.Request()
+            # self.req.mode = 1
+            # self.req.on_off = 0
+            # self.req.thread_flag = 0
+            # self.req.pic_num = 0
+            # self.req.get_pic = 1
+            # reqs =  self.ptz_control_client.call_async(self.req)
+
+            # while not reqs.done():  
+            #     time.sleep(0.1) 
+            # response = reqs.result()
+            # self.get_logger().info("response.success = {},{}\n".format(response.success,response.errtext))
+            self.read_post()
+
+            self.stop_thread()
 
 
 
-            print("This is running in a separate thread.")  
+
+            # print("This is running in a separate thread.")  
             time.sleep(2)  
+    def take_pic(self,name):
+        self.req = HkCamSrv.Request()
+        # self.req.mode = 1
+        # self.req.on_off = 0
+        # self.req.thread_flag = 0
+        # self.req.pic_num = 0
+        self.req.get_pic = 1
+        self.req.get_pic_name = name
+        reqs =  self.ptz_control_client.call_async(self.req)
+
+        while not reqs.done():  
+            time.sleep(0.2) 
+        response = reqs.result()
+        self.get_logger().info("response.success = {},{}\n".format(response.success,response.errtext))
+
+    def PTZPreset_Other(self,id):
+        self.req = HkCamSrv.Request()
+        self.req.mode = 39
+        self.req.point_id = id
+        reqs =  self.ptz_control_client.call_async(self.req)
+
+        while not reqs.done():  
+            time.sleep(0.2) 
+        response = reqs.result()
+        self.get_logger().info("response.success2 = {},{}\n".format(response.success,response.errcode))
+
 
     def stop_thread(self):  
         self.stop_event.set()  
@@ -144,14 +171,20 @@ class hk_cam_slave(Node):
         for i in range(0,7):
             time.sleep(0.1)
             self.stop_paly_.call_async(Empty2)
+        
     
     def read_post(self):
+        # self.del_dir_file(self.pic_path)
         txt_files_os = [f for f in os.listdir("/home/mi/mapping") if f.endswith('.json')]
-        print(txt_files_os)
+        # print(txt_files_os)
         with open("/home/mi/mapping/" + txt_files_os[0], 'r') as file: 
             content = file.read()
             content= json.loads(content)
             label_num = len(content) - 2
+            # print(content,label_num)
+            if label_num<=-1:
+                self.grpc_client.dog_speak.topic_talk("地图或标签无效")
+                self.stop_thread()
             for i in range(1, label_num + 1):
                 if i == 1:
                     
@@ -161,9 +194,20 @@ class hk_cam_slave(Node):
                 y = content[label_name]["y"]
                 json_str = self.encodeVel(x,y)
 
-                self.grpc_client.sendMsg(6004, json_str)
-                print(json_str)
+                # self.grpc_client.sendMsg(6004, json_str)
+                # print(label_num,i,json_str)
+                
+                # print("/SDCARD/picture/{}.jpg".format(label_name))
+                formatted_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+                print(i)
+                self.PTZPreset_Other(i)
+                time.sleep(10)
                 self.grpc_client.dog_speak.topic_talk("开始拍照请等待")
+                # print(i)
+                self.take_pic(self.pic_path+ "/" + formatted_time + "-{}.jpg".format(i))
+                # self.take_pic("/home/mi/Picture"+ "/" + formatted_time + "-{}.jpg".format(i))
+                
+                
                 # ptz.take_control_easy(i)
                 # ptz.take_control(PAN_LEFT,1)
                 # ptz.take_control(ZOOM_OUT,1)
@@ -174,6 +218,19 @@ class hk_cam_slave(Node):
                     self.grpc_client.sendMsg(9999, json_str)
                     # ptz.LogoutDev()
                 time.sleep(1)
+
+    
+    def del_dir_file(self, folder_path):
+        # 遍历文件夹中的所有文件并删除它们
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)  # 删除文件或符号链接
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)  # 删除子文件夹及其内容
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
 
 
     def encodeVel(self,x,y):
