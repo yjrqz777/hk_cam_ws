@@ -21,7 +21,9 @@ colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 
 sudo systemctl start cyberdog_my_run_launch.service             手动开启  
+
 sudo systemctl stop cyberdog_my_run_launch.service
+
 journalctl -u cyberdog_my_run_launch.service -f
 
 

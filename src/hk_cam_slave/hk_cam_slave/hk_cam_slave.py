@@ -57,7 +57,7 @@ import my_Lib
 
 mi_node = "/mi_desktop_48_b0_2d_7b_02_9c/"
 
-mi_node = ""
+# mi_node = ""
 
 class ProtoEncoder():
     def __init__(self):
@@ -97,17 +97,20 @@ class hk_cam_slave(Node):
                                                             "PtzControl",
                                                             )
         self.stop_event = threading.Event()  
-        self.my_thread = threading.Thread(target=self.thread_task)  
-        self.my_thread.start()
+        # self.my_thread = threading.Thread(target=self.thread_task)  
         # self.stop_event.set()
+        # self.my_thread.start()
+        # time.sleep(1)
+        
+        # self.get_logger().info('-----------------self.stop_event.is_set()1={}'.format(self.stop_event.is_set()))
         # print(formatted_time)
         # self.vad_model= torch.hub.load('/media/yjrqz/anything/ubuntu20.04/linux/yolov5/','custom',path='/media/yjrqz/anything/ubuntu20.04/linux/yolov5/best2.pt', source='local')
         # self.vad_model.conf = 0.6
         # self.vad_model.iou = 0.4
-    def thread_task(self):  
+    def thread_task(self): 
         while not self.stop_event.is_set():  
             while not self.ptz_control_client.wait_for_service(timeout_sec=1.0):
-                self.get_logger().info('service not available, waiting again...')
+                self.get_logger().info('service not available, waiting again')
 
             # self.req = HkCamSrv.Request()
             # self.req.mode = 1
@@ -126,7 +129,8 @@ class hk_cam_slave(Node):
         
 
             # print("This is running in a separate thread.")  
-            time.sleep(2)  
+            time.sleep(1)  
+
     def take_pic(self,name):
         self.req = HkCamSrv.Request()
         # self.req.mode = 1
@@ -138,7 +142,7 @@ class hk_cam_slave(Node):
         reqs =  self.ptz_control_client.call_async(self.req)
 
         while not reqs.done():  
-            time.sleep(0.2) 
+            time.sleep(0.1) 
         response = reqs.result()
         self.get_logger().info("response.success = {},{}\n".format(response.success,response.errtext))
 
@@ -149,7 +153,7 @@ class hk_cam_slave(Node):
         reqs =  self.ptz_control_client.call_async(self.req)
 
         while not reqs.done():  
-            time.sleep(0.2) 
+            time.sleep(0.1) 
         response = reqs.result()
         self.get_logger().info("response.success2 = {},{}\n".format(response.success,response.errcode))
 
@@ -160,17 +164,38 @@ class hk_cam_slave(Node):
     def get_text_callback(self,text):
         # self.get_logger().info("hk_node")
         self.get_logger().info(text.data)
-        self.cmd_text = text.data
-        if "开始" or "巡检" or "开始巡检" in self.cmd_text:
-            self.stop_event.clear()
+        # self.cmd_text = text.data
+        if "开始" in text.data or "巡检" in text.data or "开始巡检" in text.data:
+            self.get_logger().info('-----------------self.stop_event.is_set()={}'.format(self.stop_event.is_set()))
+            # self.stop_event.clear()
+            try:
+                self.my_thread = threading.Thread(target=self.thread_task)  
+                self.my_thread.start()
+                Empty2 = Empty.Request()
+                for i in range(0,8):
+                    time.sleep(0.1)
+                    self.get_logger().info('+1{}'.format(i))
+                    self.stop_paly_.call_async(Empty2)
+                self.grpc_client.dog_speak.topic_talk("开始巡检")
+            except:
+                Empty2 = Empty.Request()
+                for i in range(0,8):
+                    time.sleep(0.1)
+                    self.get_logger().info('+2{}'.format(i))
+                    self.stop_paly_.call_async(Empty2)
+        else:
+            Empty2 = Empty.Request()
+            for i in range(0,8):
+                time.sleep(0.1)
+                self.get_logger().info('+3{}'.format(i))
+                self.stop_paly_.call_async(Empty2)
+            self.grpc_client.dog_speak.topic_talk(text.data)
+            
             # self.my_thread.start()
             
             # self.stop_thread()
         # 强制闭嘴，因为开始说话有大概0.6s延迟,循环之后让他完全不出声，自行调整
-        Empty2 = Empty.Request()
-        for i in range(0,7):
-            time.sleep(0.1)
-            self.stop_paly_.call_async(Empty2)
+
         
     
     def read_post(self):
@@ -185,8 +210,8 @@ class hk_cam_slave(Node):
             if label_num<=-1:
                 self.grpc_client.dog_speak.topic_talk("地图或标签无效")
                 self.stop_thread()
+
             else:
-                self.grpc_client.dog_speak.topic_talk("开始巡检")
                 for i in range(1, label_num + 1):
                     if i == 1:
                         

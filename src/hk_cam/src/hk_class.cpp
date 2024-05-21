@@ -156,15 +156,18 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
     pic_arg->wPicQuality = 0;
     RCLCPP_WARN(this->get_logger(), "get_pic_name = %s\n",request->get_pic_name.c_str());
     std::string pic_name = request->get_pic_name;
-    char sPicFileName[pic_name.size() + 1];
-    std::strcpy(sPicFileName, pic_name.c_str());
+    // char sPicFileName[pic_name.size() + 1];
+    // std::strcpy(sPicFileName, pic_name.c_str());
 
     // std::string pic_name = request->get_pic_name;
     // std::vector<char> sPicFileName(pic_name.begin(), pic_name.end());
     // sPicFileName.push_back('\0');  // 确保空终止符存在
     // if(NET_DVR_CaptureJPEGPicture(this->lUserID, 1, this->pic_arg, sPicFileName.data()))
     
-    if(NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,sPicFileName))
+    char* charPtr = new char[pic_name.length() + 1]; // +1 for the null terminator  
+    std::strcpy(charPtr, pic_name.c_str()); // 使用C字符串函数strcpy来复制内容  
+
+    if(NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,charPtr))
     // if(NET_DVR_CaptureJPEGPicture(this->lUserID, 1, this->pic_arg, pic_name.c_str()))
     {
         response->success = true;
@@ -175,7 +178,8 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
         response->success = false;
         response->errcode = NET_DVR_GetLastError(); 
     }
-    std::memset(sPicFileName, 0, sizeof(sPicFileName));
+    // std::memset(sPicFileName, 0, sizeof(sPicFileName));
+    delete[] charPtr;
 
     }
     else if( (request->mode>=11 && request->mode<=14) ||  (request->mode>=21 && request->mode<=24) )

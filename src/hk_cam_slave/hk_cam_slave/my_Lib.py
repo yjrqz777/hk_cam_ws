@@ -14,7 +14,7 @@ def printff():
     print("1111")
 
 mi_node = "/mi_desktop_48_b0_2d_7b_02_9c/"
-mi_node = ""
+# mi_node = ""
 
 class AudioT(Node):
     def __init__(self,name):
