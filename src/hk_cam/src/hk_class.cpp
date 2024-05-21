@@ -146,14 +146,16 @@ string errtext
 void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::SharedPtr request,
                           const hk_interfaces::srv::HkCamSrv::Response::SharedPtr response)
 {
-    RCLCPP_WARN(this->get_logger(), "mode = %d,\non_off = %d,\npoint_id= %d,\nthread_flag=%d,\npic_num=%d,\nget_pic=%d,\nget_pic_name=%s,\npicname=%s\n",request->mode,request->on_off,request->point_id,request->thread_flag,request->pic_num,request->get_pic,request->get_pic_name.c_str(),request->picname.c_str());
+    RCLCPP_INFO(this->get_logger(), "mode = %d,\non_off = %d,\npoint_id= %d,\nthread_flag=%d,\npic_num=%d,\nget_pic=%d,\nget_pic_name=%s,\npicname=%s\n",request->mode,request->on_off,request->point_id,request->thread_flag,request->pic_num,request->get_pic,request->get_pic_name.c_str(),request->picname.c_str());
     bool res = false;
 //    ptz_cmdx = request->mode;
     if(request->get_pic)
     {
-    LPNET_DVR_JPEGPARA pic_arg;
-    pic_arg->wPicSize = 9;
-    pic_arg->wPicQuality = 0;
+    RCLCPP_WARN(this->get_logger(), "-------1-------\n");
+    NET_DVR_JPEGPARA pic_arg;
+    pic_arg.wPicSize = 9;
+    pic_arg.wPicQuality = 0;
+    RCLCPP_WARN(this->get_logger(), "-------2-------\n");
     RCLCPP_WARN(this->get_logger(), "get_pic_name = %s\n",request->get_pic_name.c_str());
     std::string pic_name = request->get_pic_name;
     // char sPicFileName[pic_name.size() + 1];
@@ -167,7 +169,7 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
     char* charPtr = new char[pic_name.length() + 1]; // +1 for the null terminator  
     std::strcpy(charPtr, pic_name.c_str()); // 使用C字符串函数strcpy来复制内容  
 
-    if(NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,charPtr))
+    if(NET_DVR_CaptureJPEGPicture(this->lUserID,1,&pic_arg,charPtr))
     // if(NET_DVR_CaptureJPEGPicture(this->lUserID, 1, this->pic_arg, pic_name.c_str()))
     {
         response->success = true;

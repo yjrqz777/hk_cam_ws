@@ -77,7 +77,8 @@ class hk_cam_slave(Node):
         super().__init__(name)
         self.get_logger().info("Hello ROS 2")  
         self.dog_speak = my_Lib.AudioT("dog_speak_salve") 
-        self.pic_path = "/SDCARD/workspace/cyberdog2_ros2_galactic/picture"
+        # self.pic_path = "/SDCARD/workspace/cyberdog2_ros2_galactic/picture"
+        self.pic_path = "/SDCARD/picture"
         # self.dog_speak.topic_talk("哔哔")
 
         self.grpc_client = my_Lib.Client("127.0.0.1",
@@ -108,6 +109,7 @@ class hk_cam_slave(Node):
         # self.vad_model.conf = 0.6
         # self.vad_model.iou = 0.4
     def thread_task(self): 
+        self.get_logger().info(f'++++++++++++++{self.stop_event.is_set()}')
         while not self.stop_event.is_set():  
             while not self.ptz_control_client.wait_for_service(timeout_sec=1.0):
                 self.get_logger().info('service not available, waiting again')
@@ -140,8 +142,11 @@ class hk_cam_slave(Node):
         self.req.get_pic = 1
         self.req.get_pic_name = name
         reqs =  self.ptz_control_client.call_async(self.req)
-
+        i=0
         while not reqs.done():  
+            i=i+1
+            if i>1000:
+                break
             time.sleep(0.1) 
         response = reqs.result()
         self.get_logger().info("response.success = {},{}\n".format(response.success,response.errtext))
@@ -169,25 +174,29 @@ class hk_cam_slave(Node):
             self.get_logger().info('-----------------self.stop_event.is_set()={}'.format(self.stop_event.is_set()))
             # self.stop_event.clear()
             try:
-                self.my_thread = threading.Thread(target=self.thread_task)  
+                self.my_thread = threading.Thread(name = "xxx",target=self.thread_task)  
                 self.my_thread.start()
+                self.stop_event.clear()
+                # 强制闭嘴，因为开始说话有大概0.7s延迟,循环之后让他完全不出声，自行调整
                 Empty2 = Empty.Request()
                 for i in range(0,8):
                     time.sleep(0.1)
-                    self.get_logger().info('+1{}'.format(i))
+                    # self.get_logger().info('+1{}'.format(i))
                     self.stop_paly_.call_async(Empty2)
                 self.grpc_client.dog_speak.topic_talk("开始巡检")
             except:
+                # 强制闭嘴，因为开始说话有大概0.6s延迟,循环之后让他完全不出声，自行调整
                 Empty2 = Empty.Request()
                 for i in range(0,8):
                     time.sleep(0.1)
-                    self.get_logger().info('+2{}'.format(i))
+                    # self.get_logger().info('+2{}'.format(i))
                     self.stop_paly_.call_async(Empty2)
         else:
+            # 强制闭嘴，因为开始说话有大概0.6s延迟,循环之后让他完全不出声，自行调整
             Empty2 = Empty.Request()
             for i in range(0,8):
                 time.sleep(0.1)
-                self.get_logger().info('+3{}'.format(i))
+                # self.get_logger().info('+3{}'.format(i))
                 self.stop_paly_.call_async(Empty2)
             self.grpc_client.dog_speak.topic_talk(text.data)
             
@@ -203,38 +212,42 @@ class hk_cam_slave(Node):
         txt_files_os = [f for f in os.listdir("/home/mi/mapping") if f.endswith('.json')]
         # print(txt_files_os)
         with open("/home/mi/mapping/" + txt_files_os[0], 'r') as file: 
+            label_num_list = []
+            i = 0
             content = file.read()
             content= json.loads(content)
             label_num = len(content) - 2
+            for key in content.keys():
+                i = i+1
+                if i>2 :
+                    label_num_list.append(key)
+                    print(f"{label_num_list}")
             # print(content,label_num)
             if label_num<=-1:
                 self.grpc_client.dog_speak.topic_talk("地图或标签无效")
                 self.stop_thread()
 
             else:
-                for i in range(1, label_num + 1):
-                    if i == 1:
-                        
-                        time.sleep(1)
-                    label_name = "".join("标签名称{}".format(i))
-                    x = content[label_name]["x"]
-                    y = content[label_name]["y"]
+                for i in range(0, label_num):
+                    # if i == 1:
+                    #     time.sleep(1)
+                    x = content[label_num_list[i]]["x"]
+                    y = content[label_num_list[i]]["y"]
                     json_str = self.encodeVel(x,y)
 
-                    # self.grpc_client.sendMsg(6004, json_str)
+                    self.grpc_client.sendMsg(6004, json_str)
                     # print(label_num,i,json_str)
                     
                     # print("/SDCARD/picture/{}.jpg".format(label_name))
                     formatted_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
                     print(i)
-                    self.PTZPreset_Other(i)
-                    time.sleep(10)
                     self.grpc_client.dog_speak.topic_talk("开始拍照请等待")
-                    time.sleep(2)
+                    self.PTZPreset_Other(i)
+                    time.sleep(22)
                     # print(i)
-                    strings = self.pic_path+ "/" + formatted_time + "-{}.jpg".format(i)
-                    self.get_logger().info("----------------")
-                    self.get_logger().info("strings = {}\n".format(strings))
+                    strings = self.pic_path+ "/" + formatted_time + "-{}.jpg".format(label_num_list[i])
+                    # self.get_logger().info("----------------")
+                    # self.get_logger().info("{}\n".format(strings))
                     # print(strings)
                     self.take_pic(strings)
                     # self.take_pic("/home/mi/Picture"+ "/" + formatted_time + "-{}.jpg".format(i))
@@ -245,8 +258,8 @@ class hk_cam_slave(Node):
                     # ptz.take_control(ZOOM_OUT,1)
                     # ptz.take_pic(p_size=9,p_name="{}".format(label_name))
                     self.grpc_client.dog_speak.topic_talk("拍照完成")
-                    label_name = ""
-                    if i == label_num:
+                    # label_name = ""
+                    if i == label_num-1:
                         self.grpc_client.sendMsg(9999, json_str)
                         self.stop_thread()
                         # ptz.LogoutDev()
