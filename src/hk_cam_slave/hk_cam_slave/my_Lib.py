@@ -14,6 +14,7 @@ def printff():
     print("1111")
 
 mi_node = "/mi_desktop_48_b0_2d_7b_02_9c/"
+mi_node = ""
 
 class AudioT(Node):
     def __init__(self,name):
@@ -65,6 +66,7 @@ class Client:
     def sendMsg(self, name_code, params):
         if name_code == 9999:
             print(name_code)
+            self.dog_speak.topic_talk("所有目标巡检完毕")
             # self.dog_speak.destroy_node()
         else:
             try:

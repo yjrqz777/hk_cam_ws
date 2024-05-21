@@ -36,6 +36,7 @@ public:
 private:
 //    LONG nport = 1;
     rclcpp::TimerBase::SharedPtr timer_;
+    // LPNET_DVR_JPEGPARA pic_arg;
     std::thread publish_thread_;
     uint8_t thread_flag_;
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_img;

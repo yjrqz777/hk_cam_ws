@@ -125,11 +125,28 @@ int HK_Node::GetStream()
     PAN_RIGHT	24	云台右转
     云台停止动作或开始动作：0－开始，1－停止
     TRUE表示成功，FALSE表示失败
+
+# request
+uint8 mode
+uint8 on_off
+uint16 point_id
+uint8 thread_flag
+uint8 pic_num
+uint8 get_pic
+string get_pic_name
+string picname
+---
+# response
+bool success
+uint8 errcode
+string errtext
+
+
  */
 void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::SharedPtr request,
                           const hk_interfaces::srv::HkCamSrv::Response::SharedPtr response)
 {
-    RCLCPP_INFO(this->get_logger(), "request->mode = %d,request->on_off = %d\n",request->mode,request->on_off);
+    RCLCPP_WARN(this->get_logger(), "mode = %d,\non_off = %d,\npoint_id= %d,\nthread_flag=%d,\npic_num=%d,\nget_pic=%d,\nget_pic_name=%s,\npicname=%s\n",request->mode,request->on_off,request->point_id,request->thread_flag,request->pic_num,request->get_pic,request->get_pic_name.c_str(),request->picname.c_str());
     bool res = false;
 //    ptz_cmdx = request->mode;
     if(request->get_pic)
@@ -137,11 +154,18 @@ void HK_Node::ptz_control_callback(const hk_interfaces::srv::HkCamSrv::Request::
     LPNET_DVR_JPEGPARA pic_arg;
     pic_arg->wPicSize = 9;
     pic_arg->wPicQuality = 0;
-    RCLCPP_INFO(this->get_logger(), "get_pic_name = %s\n",request->get_pic_name.c_str());
+    RCLCPP_WARN(this->get_logger(), "get_pic_name = %s\n",request->get_pic_name.c_str());
     std::string pic_name = request->get_pic_name;
     char sPicFileName[pic_name.size() + 1];
     std::strcpy(sPicFileName, pic_name.c_str());
+
+    // std::string pic_name = request->get_pic_name;
+    // std::vector<char> sPicFileName(pic_name.begin(), pic_name.end());
+    // sPicFileName.push_back('\0');  // 确保空终止符存在
+    // if(NET_DVR_CaptureJPEGPicture(this->lUserID, 1, this->pic_arg, sPicFileName.data()))
+    
     if(NET_DVR_CaptureJPEGPicture(this->lUserID,1,pic_arg,sPicFileName))
+    // if(NET_DVR_CaptureJPEGPicture(this->lUserID, 1, this->pic_arg, pic_name.c_str()))
     {
         response->success = true;
         response->errcode = 0;

@@ -57,7 +57,7 @@ import my_Lib
 
 mi_node = "/mi_desktop_48_b0_2d_7b_02_9c/"
 
-
+mi_node = ""
 
 class ProtoEncoder():
     def __init__(self):
@@ -99,6 +99,7 @@ class hk_cam_slave(Node):
         self.stop_event = threading.Event()  
         self.my_thread = threading.Thread(target=self.thread_task)  
         self.my_thread.start()
+        # self.stop_event.set()
         # print(formatted_time)
         # self.vad_model= torch.hub.load('/media/yjrqz/anything/ubuntu20.04/linux/yolov5/','custom',path='/media/yjrqz/anything/ubuntu20.04/linux/yolov5/best2.pt', source='local')
         # self.vad_model.conf = 0.6
@@ -122,10 +123,7 @@ class hk_cam_slave(Node):
             # self.get_logger().info("response.success = {},{}\n".format(response.success,response.errtext))
             self.read_post()
 
-            self.stop_thread()
-
-
-
+        
 
             # print("This is running in a separate thread.")  
             time.sleep(2)  
@@ -163,8 +161,10 @@ class hk_cam_slave(Node):
         # self.get_logger().info("hk_node")
         self.get_logger().info(text.data)
         self.cmd_text = text.data
-        if "开始" or "巡检" in self.cmd_text:
-            self.my_thread.start()
+        if "开始" or "巡检" or "开始巡检" in self.cmd_text:
+            self.stop_event.clear()
+            # self.my_thread.start()
+            
             # self.stop_thread()
         # 强制闭嘴，因为开始说话有大概0.6s延迟,循环之后让他完全不出声，自行调整
         Empty2 = Empty.Request()
@@ -185,39 +185,47 @@ class hk_cam_slave(Node):
             if label_num<=-1:
                 self.grpc_client.dog_speak.topic_talk("地图或标签无效")
                 self.stop_thread()
-            for i in range(1, label_num + 1):
-                if i == 1:
-                    
-                    time.sleep(1)
-                label_name = "".join("标签名称{}".format(i))
-                x = content[label_name]["x"]
-                y = content[label_name]["y"]
-                json_str = self.encodeVel(x,y)
+            else:
+                self.grpc_client.dog_speak.topic_talk("开始巡检")
+                for i in range(1, label_num + 1):
+                    if i == 1:
+                        
+                        time.sleep(1)
+                    label_name = "".join("标签名称{}".format(i))
+                    x = content[label_name]["x"]
+                    y = content[label_name]["y"]
+                    json_str = self.encodeVel(x,y)
 
-                # self.grpc_client.sendMsg(6004, json_str)
-                # print(label_num,i,json_str)
-                
-                # print("/SDCARD/picture/{}.jpg".format(label_name))
-                formatted_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-                print(i)
-                self.PTZPreset_Other(i)
-                time.sleep(10)
-                self.grpc_client.dog_speak.topic_talk("开始拍照请等待")
-                # print(i)
-                self.take_pic(self.pic_path+ "/" + formatted_time + "-{}.jpg".format(i))
-                # self.take_pic("/home/mi/Picture"+ "/" + formatted_time + "-{}.jpg".format(i))
-                
-                
-                # ptz.take_control_easy(i)
-                # ptz.take_control(PAN_LEFT,1)
-                # ptz.take_control(ZOOM_OUT,1)
-                # ptz.take_pic(p_size=9,p_name="{}".format(label_name))
-                self.grpc_client.dog_speak.topic_talk("拍照完成")
-                label_name = ""
-                if i == label_num:
-                    self.grpc_client.sendMsg(9999, json_str)
-                    # ptz.LogoutDev()
-                time.sleep(1)
+                    # self.grpc_client.sendMsg(6004, json_str)
+                    # print(label_num,i,json_str)
+                    
+                    # print("/SDCARD/picture/{}.jpg".format(label_name))
+                    formatted_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+                    print(i)
+                    self.PTZPreset_Other(i)
+                    time.sleep(10)
+                    self.grpc_client.dog_speak.topic_talk("开始拍照请等待")
+                    time.sleep(2)
+                    # print(i)
+                    strings = self.pic_path+ "/" + formatted_time + "-{}.jpg".format(i)
+                    self.get_logger().info("----------------")
+                    self.get_logger().info("strings = {}\n".format(strings))
+                    # print(strings)
+                    self.take_pic(strings)
+                    # self.take_pic("/home/mi/Picture"+ "/" + formatted_time + "-{}.jpg".format(i))
+                    
+                    
+                    # ptz.take_control_easy(i)
+                    # ptz.take_control(PAN_LEFT,1)
+                    # ptz.take_control(ZOOM_OUT,1)
+                    # ptz.take_pic(p_size=9,p_name="{}".format(label_name))
+                    self.grpc_client.dog_speak.topic_talk("拍照完成")
+                    label_name = ""
+                    if i == label_num:
+                        self.grpc_client.sendMsg(9999, json_str)
+                        self.stop_thread()
+                        # ptz.LogoutDev()
+                    time.sleep(1)
 
     
     def del_dir_file(self, folder_path):
