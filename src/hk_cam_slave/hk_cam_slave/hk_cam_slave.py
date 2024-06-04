@@ -37,7 +37,7 @@ import os
 import numpy as np
 import time
 import json
-
+import socket  
 
 current_file_abspath = os.path.abspath(__file__)  
   
@@ -200,12 +200,66 @@ class hk_cam_slave(Node):
                 self.stop_paly_.call_async(Empty2)
             self.grpc_client.dog_speak.topic_talk(text.data)
             
+        if "传输" in text.data or "图片" in text.data or "传输图片" in text.data:
+            with open("/SDCARD/ip.text","r")as f:
+                ip = f.readline()
+            
+                # print(ip)
+            self.pic_send = threading.Thread(name = "xxx",target=self.pic_send_task,args=(ip,11000,self.pic_path + "/"))  
+            self.pic_send.start()
+            Empty2 = Empty.Request()
+            for i in range(0,8):
+                time.sleep(0.1)
+                # self.get_logger().info('+2{}'.format(i))
+                self.stop_paly_.call_async(Empty2)
             # self.my_thread.start()
             
             # self.stop_thread()
         # 强制闭嘴，因为开始说话有大概0.6s延迟,循环之后让他完全不出声，自行调整
 
+    def pic_send_task(self,host, port, directory):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:  
+            try:
+                client_socket.bind((host, port))  
+                # except:
+                #     client_socket.connect((host, port)) 
+                client_socket.listen(5)  
+                # print('Server is listening...')
+                time.sleep(1)
+                self.grpc_client.dog_speak.topic_talk("等待上位机连接，ip地址为{}".format(host))  
+                
+                client_socket, addr = client_socket.accept() 
         
+
+                files_and_directories = os.listdir(directory)  
+                # print(files_and_directories)
+                # 打印出所有文件和文件夹  
+                for item in files_and_directories:  
+                    # print(item)
+                    image_path = directory + item
+                    print(image_path)
+                # 发送图片文件名  
+                    filename = os.path.basename(image_path)  
+                    print(filename)
+                    time.sleep(0.1)
+                    client_socket.sendall(filename.encode('utf-8'))  
+            
+                    # 发送文件大小（可选，帮助服务端知道何时停止接收）  
+                    with open(image_path, 'rb') as f:  
+                        filesize = os.path.getsize(image_path)  
+                        client_socket.sendall(filesize.to_bytes(8, byteorder='big'))  
+            
+                    # 发送图片数据  
+                    with open(image_path, 'rb') as f:  
+                        while True:  
+                            data = f.read(4096)  # 每次发送4096字节  
+                            if not data:  
+                                break  
+                            client_socket.sendall(data)  
+                            # print('send data')
+                client_socket.close()
+            except:
+                self.grpc_client.dog_speak.topic_talk("上位机连接失败，请重新输入语言指令")  
     
     def read_post(self):
         # self.del_dir_file(self.pic_path)

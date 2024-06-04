@@ -16,6 +16,7 @@ colcon build --symlink-install
 ros2 pkg create example_ros2_interfaces --build-type ament_cmake --dependencies rosidl_default_generators geometry_msgs
 
 
+
 colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 
@@ -32,9 +33,10 @@ systemctl restart cyberdog_bringup.service
 
 
 colcon build --packages-select hk_cam
+
 ros2 run hk_cam hk_cam
 
-
+ros2 run hk_cam_slave hk_cam_slave
 
 
 # This message contains an uncompressed image
