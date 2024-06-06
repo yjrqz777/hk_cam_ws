@@ -224,8 +224,8 @@ class hk_cam_slave(Node):
                 # except:
                 #     client_socket.connect((host, port)) 
                 client_socket.listen(5)  
-                # print('Server is listening...')
-                time.sleep(1)
+                self.get_logger().info(host)
+                time.sleep(2)
                 self.grpc_client.dog_speak.topic_talk("等待上位机连接，ip地址为{}".format(host))  
                 
                 client_socket, addr = client_socket.accept() 
@@ -312,6 +312,7 @@ class hk_cam_slave(Node):
                     # ptz.take_control(ZOOM_OUT,1)
                     # ptz.take_pic(p_size=9,p_name="{}".format(label_name))
                     self.grpc_client.dog_speak.topic_talk("拍照完成")
+                    self.PTZPreset_Other(20)
                     # label_name = ""
                     if i == label_num-1:
                         self.grpc_client.sendMsg(9999, json_str)
